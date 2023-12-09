@@ -59,12 +59,15 @@ def get_metadata(buildroot):
     """Get languages from configure system (mesonbuild...)"""
     with open(os.path.join(buildroot, 'build.ninja')) as ninjafile:
         ninja = ninjafile.read().strip()
-        match = re.search(r'regenerate[\s]*([^\s]*)', ninja)
+        match = re.search(r'regenerate-during-build -S[\s]*([^\s]*)', ninja)
+        print("match",match)
         if match:
             srcroot = match.group(1)
             mesonfilename = os.path.join(srcroot, 'meson.build')
         else:
             return ('', [])
+        print(mesonfilename)
+        mesonfilename = "meson.build"
         with open(mesonfilename) as mesonfile:
             meson = mesonfile.read().strip()
             project_regex = r'project\([^,]*,[\s]*((\'[^\']*\'[\s,]*)+)'
@@ -145,3 +148,4 @@ if __name__ == '__main__':
                 time.sleep(1)
             except KeyboardInterrupt:
                 break
+
